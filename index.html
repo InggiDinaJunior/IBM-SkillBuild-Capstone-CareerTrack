@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerTrack — Job Application Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <span class="logo-icon">&#9670;</span>
+      <span class="logo-text">CareerTrack</span>
+    </div>
+    <nav class="sidebar__nav" aria-label="Main navigation">
+      <ul>
+        <li>
+          <a href="#" class="nav-link active" data-view="dashboard" aria-current="page">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-view="applications">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Applications
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link" data-view="add">
+            <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Add Application
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="sidebar__footer">
+      <p>v1.0.0 &bull; Local only</p>
+    </div>
+  </aside>
+
+  <!-- ===== MOBILE OVERLAY ===== -->
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+  <!-- ===== MAIN WRAPPER ===== -->
+  <div class="main-wrapper">
+
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="header__title" id="headerTitle">Dashboard</div>
+      <div class="header__actions">
+        <button class="btn btn--primary btn--sm" id="headerAddBtn">+ New Application</button>
+      </div>
+    </header>
+
+    <!-- ===== DASHBOARD VIEW ===== -->
+    <main class="view" id="view-dashboard">
+
+      <section class="summary-cards" aria-label="Application statistics">
+        <article class="card card--total">
+          <div class="card__icon" aria-hidden="true">&#128196;</div>
+          <div class="card__body">
+            <span class="card__label">Total Applications</span>
+            <span class="card__value" id="statTotal">0</span>
+          </div>
+        </article>
+        <article class="card card--interview">
+          <div class="card__icon" aria-hidden="true">&#128197;</div>
+          <div class="card__body">
+            <span class="card__label">Interviews</span>
+            <span class="card__value" id="statInterview">0</span>
+          </div>
+        </article>
+        <article class="card card--offer">
+          <div class="card__icon" aria-hidden="true">&#9989;</div>
+          <div class="card__body">
+            <span class="card__label">Offers</span>
+            <span class="card__value" id="statOffer">0</span>
+          </div>
+        </article>
+        <article class="card card--rejected">
+          <div class="card__icon" aria-hidden="true">&#10060;</div>
+          <div class="card__body">
+            <span class="card__label">Rejections</span>
+            <span class="card__value" id="statRejected">0</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- STATUS BREAKDOWN CHART -->
+      <section class="chart-section" aria-label="Status breakdown">
+        <h2 class="section-title">Status Breakdown</h2>
+        <div class="chart-bars" id="chartBars" aria-live="polite"></div>
+      </section>
+
+      <!-- UPCOMING INTERVIEWS -->
+      <section class="upcoming-section" aria-label="Upcoming interviews">
+        <h2 class="section-title">Upcoming Interviews</h2>
+        <div id="upcomingList" aria-live="polite"></div>
+      </section>
+
+    </main>
+
+    <!-- ===== APPLICATIONS VIEW ===== -->
+    <main class="view hidden" id="view-applications">
+
+      <div class="toolbar">
+        <div class="toolbar__search">
+          <label for="searchInput" class="sr-only">Search applications</label>
+          <input type="search" id="searchInput" class="input" placeholder="Search company or job title…" autocomplete="off" />
+        </div>
+        <div class="toolbar__filter">
+          <label for="filterStatus" class="sr-only">Filter by status</label>
+          <select id="filterStatus" class="input">
+            <option value="">All Statuses</option>
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview</option>
+            <option value="Offer">Offer</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+        <button class="btn btn--secondary btn--sm" id="clearFiltersBtn">Clear Filters</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="app-table" aria-label="Job applications">
+          <thead>
+            <tr>
+              <th scope="col">Company</th>
+              <th scope="col">Job Title</th>
+              <th scope="col">Applied Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Interview Date</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appTableBody" aria-live="polite"></tbody>
+        </table>
+      </div>
+      <p class="empty-state hidden" id="emptyState">No applications match your search or filter.</p>
+
+    </main>
+
+    <!-- ===== ADD / EDIT FORM VIEW ===== -->
+    <main class="view hidden" id="view-add">
+
+      <div class="form-card">
+        <h2 class="form-card__title" id="formTitle">Add New Application</h2>
+        <form id="appForm" novalidate>
+          <input type="hidden" id="editId" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fCompany">Company Name <span aria-hidden="true">*</span></label>
+              <input type="text" id="fCompany" class="input" placeholder="e.g. Google" required maxlength="100" />
+              <span class="field-error" id="errCompany" role="alert"></span>
+            </div>
+            <div class="form-group">
+              <label for="fTitle">Job Title <span aria-hidden="true">*</span></label>
+              <input type="text" id="fTitle" class="input" placeholder="e.g. Software Engineer Intern" required maxlength="100" />
+              <span class="field-error" id="errTitle" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fDate">Application Date <span aria-hidden="true">*</span></label>
+              <input type="date" id="fDate" class="input" required />
+              <span class="field-error" id="errDate" role="alert"></span>
+            </div>
+            <div class="form-group">
+              <label for="fStatus">Status <span aria-hidden="true">*</span></label>
+              <select id="fStatus" class="input" required>
+                <option value="">Select status…</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+              <span class="field-error" id="errStatus" role="alert"></span>
+            </div>
+          </div>
+
+          <!-- Interview fields — shown only when status = Interview -->
+          <div class="form-row interview-fields hidden" id="interviewFields">
+            <div class="form-group">
+              <label for="fInterviewDate">Interview Date</label>
+              <input type="date" id="fInterviewDate" class="input" />
+              <span class="field-error" id="errInterviewDate" role="alert"></span>
+            </div>
+            <div class="form-group">
+              <label for="fInterviewTime">Interview Time</label>
+              <input type="time" id="fInterviewTime" class="input" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="fNotes">Notes (optional)</label>
+            <textarea id="fNotes" class="input textarea" placeholder="Additional details, recruiter contact, next steps…" rows="4" maxlength="500"></textarea>
+            <span class="char-count" id="charCount">0 / 500</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary" id="submitBtn">Save Application</button>
+            <button type="button" class="btn btn--ghost" id="cancelBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+    </main>
+
+  </div><!-- /.main-wrapper -->
+
+  <!-- ===== DELETE CONFIRMATION MODAL ===== -->
+  <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <h3 class="modal__title" id="modalTitle">Delete Application</h3>
+      <p class="modal__body" id="modalBody">Are you sure you want to delete this application? This action cannot be undone.</p>
+      <div class="modal__actions">
+        <button class="btn btn--danger" id="confirmDeleteBtn">Delete</button>
+        <button class="btn btn--ghost" id="cancelDeleteBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
